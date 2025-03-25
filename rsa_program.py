@@ -13,7 +13,7 @@ print(sys.argv[1])
 
 if(sys.argv[1] == "--generate-key"):
    print("-–generate-key case")
-   if sys.argv[2] == "--p":
+   if sys.argv[2] == "--p":   # Get required file name on argv.
       p = int(sys.argv[3])
       q = int(sys.argv[5])
    
@@ -23,14 +23,14 @@ if(sys.argv[1] == "--generate-key"):
 
    # print(p, q)
  
-   n = p * q
+   n = p * q               # Calculate n, phi.
    phi = (p - 1) * (q - 1)
-   gcd_rst = gcd(p, q)
+   # gcd_rst = gcd(p, q)
 
-   for e in range (2, phi):
+   for e in range (2, phi): # Finding e by using property of 1 < e < phi and gcd(phi, e) == 1.
       gcd_rst = gcd(phi, e)
 
-      if(gcd_rst == 1):
+      if(gcd_rst == 1): # If found candidate e,
             # print(e, "has gcd_rst = 1")
             a = phi
             b = e
@@ -40,7 +40,7 @@ if(sys.argv[1] == "--generate-key"):
             # t_2 = 1
 
             d = 2
-            while(d < phi):
+            while(d < phi): # Find candidate d by checking e*d mod phi == 1.
                if( (e * d) % phi == 1):
                   break               
                d += 1
@@ -67,7 +67,7 @@ if(sys.argv[1] == "--generate-key"):
             # d = t_1
             # print(e, d)
 
-            if(d > 1 and d < phi):
+            if(d > 1 and d < phi):  # If proper d is found(1 < d < phi and e*d mod phi == 1), break function and print result.
                break
 
    print("RSA key pair generated:")
@@ -76,7 +76,7 @@ if(sys.argv[1] == "--generate-key"):
    print("d=", d)
    print("phi=",phi)
 
-   pub = open("public_key.txt", "w")
+   pub = open("public_key.txt", "w")   # Print result into screen and file.
    pri = open("private_key.txt", "w")
 
    pub_txt = "n=" + str(n) + "\ne=" + str(e)
@@ -89,13 +89,13 @@ if(sys.argv[1] == "--generate-key"):
 
 if(sys.argv[1] == "--encrypt"):
    print("--encrypt case")
-   p_txt_name = sys.argv[2]
+   p_txt_name = sys.argv[2]   # Get required file name on argv.
    pub_key_name = sys.argv[4]
    c_txt_name = sys.argv[6]
 
    print(p_txt_name, pub_key_name, c_txt_name)
 
-   p_txt_file = open(p_txt_name, "r")
+   p_txt_file = open(p_txt_name, "r")     # Open required files.
    pub_key_file = open(pub_key_name, "r")
    c_txt_file = open(c_txt_name, "w")
 
@@ -123,7 +123,7 @@ if(sys.argv[1] == "--encrypt"):
    e = int(e)
 
    for i in p_txt:
-      t_str = hex(ascii(i))
+      t_str = hex(ascii(i))   # Need to find how to conv target str into ascii int value.
       print(t_str)
       print(t_str*5)
 
