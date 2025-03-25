@@ -8,15 +8,16 @@ def gcd(a, b): # Euclidean Algorithm to get gcd.
       rst = gcd(b, q)
       return rst
 
-print (sys.argv)
+print(sys.argv)
+print(sys.argv[1])
 
-if(sys.argv[1] == "–generate-key"):
-   print("–generate-key case")
-   if sys.argv[2] == "-p":
+if(sys.argv[1] == "--generate-key"):
+   print("-–generate-key case")
+   if sys.argv[2] == "--p":
       p = int(sys.argv[3])
       q = int(sys.argv[5])
    
-   if sys.argv[2] == "-q":
+   if sys.argv[2] == "--q":
       q = int(sys.argv[3])
       p = int(sys.argv[5])
 
@@ -83,15 +84,61 @@ if(sys.argv[1] == "–generate-key"):
    pub.write(pub_txt)
    pri.write(pri_txt)
 
-if(sys.argv[1] == "–encrypt"):
+   pub.close()
+   pri.close()
 
-   print("–encrypt case")
+if(sys.argv[1] == "--encrypt"):
+   print("--encrypt case")
+   p_txt_name = sys.argv[2]
+   pub_key_name = sys.argv[4]
+   c_txt_name = sys.argv[6]
 
-if(sys.argv[1] == "–decrypt"):
-   print("–decrypt case")
+   print(p_txt_name, pub_key_name, c_txt_name)
 
-if(sys.argv[1] == "–sign"):
-   print("–sign case")
+   p_txt_file = open(p_txt_name, "r")
+   pub_key_file = open(pub_key_name, "r")
+   c_txt_file = open(c_txt_name, "w")
 
-if(sys.argv[1] == "–verify"):
-   print("–verify case")
+   p_txt = p_txt_file.read()
+   pub_key_txt = pub_key_file.read()
+
+   c_txt = ""
+   n = ""
+   e = ""
+
+   e_line = False
+   for i in pub_key_txt: # Parsing n and e into given public_key.txt file.
+      if(i == "\n"):
+         e_line = True
+         continue
+
+      if(not(e_line)):
+         if(i != "n" and i != "="):
+            n += i
+      else:
+         if(i != "e" and i != "="):
+            e += i
+
+   n = int(n)  # Conv parsed n and e str to int.
+   e = int(e)
+
+   for i in p_txt:
+      t_str = hex(ascii(i))
+      print(t_str)
+      print(t_str*5)
+
+   p_txt_file.close()
+   pub_key_file.close()
+   c_txt_file.close()
+
+if(sys.argv[1] == "-–decrypt"):
+   print("-–decrypt case")
+
+if(sys.argv[1] == "-–sign"):
+   print("-–sign case")
+
+if(sys.argv[1] == "-–verify"):
+   print("-–verify case")
+
+if(sys.argv[1] == "a"):
+   print("test")
