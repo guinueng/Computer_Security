@@ -11,6 +11,29 @@ def gcd(a, b): # Euclidean Algorithm to get gcd.
 def rsa(msg, key, n):   # RSA function. Returns m^key mod n.
    return (msg ** key) % n
 
+def rsa_encrypt(p_txt, e, n):
+   c_txt = ""
+
+   for i in p_txt:
+      t_str = ord(i)   # ord function converts input character into corresponding ascii.
+      # Reference: https://www.quora.com/How-do-you-convert-ascii-to-integer-in-Python
+      c_txt += (str(hex(rsa(t_str, e, n))) + " ")
+   return c_txt
+
+def rsa_decrypt(c_txt, d, n):
+   p_txt = ""
+
+   tmp_str = ""
+   for i in c_txt:
+      if(i == " "):  # If space occur, calculate hex part of cipher text into corresponding plain text.
+         t_str = int(tmp_str, 16)
+         p_txt += str(chr(rsa(t_str, d, n)))
+         tmp_str = ""   # And need to flush tmp_str buffer to store new hex number.
+      else: # If before space part, collect chunk of hex number due to hex number is saved in string manner.
+         tmp_str += i
+   
+   return p_txt
+
 print(sys.argv)
 print(sys.argv[1])
 
@@ -126,14 +149,11 @@ if(sys.argv[1] == "--encrypt"):
          if(i != "e" and i != "="):
             e += i
 
-   # Conv parsed n and e str to int.
-   n = int(n)
-   e = int(e)
-
-   for i in p_txt:
-      t_str = ord(i)   # ord function converts input character into corresponding ascii.
-      # Reference: https://www.quora.com/How-do-you-convert-ascii-to-integer-in-Python
-      c_txt += (str(hex(rsa(t_str, e, n))) + " ")
+   c_txt = rsa_encrypt(p_txt, int(e), int(n))
+   # for i in p_txt:
+   #    t_str = ord(i)   # ord function converts input character into corresponding ascii.
+   #    # Reference: https://www.quora.com/How-do-you-convert-ascii-to-integer-in-Python
+   #    c_txt += (str(hex(rsa(t_str, e, n))) + " ")
 
    # Delete unnecessary space in last of cipher text.
    c_txt = c_txt[:-1]
@@ -181,20 +201,15 @@ if(sys.argv[1] == "--decrypt"):
          if(i != "d" and i != "="):
             d += i
 
-   # Conv parsed n and e str to int.
-   n = int(n)
-   d = int(d)
-
-   print(c_txt)
-
-   tmp_str = ""
-   for i in c_txt:
-      if(i == " "):  # If space occur, calculate hex part of cipher text into corresponding plain text.
-         t_str = int(tmp_str, 16)
-         p_txt += str(chr(rsa(t_str, d, n)))
-         tmp_str = ""   # And need to flush tmp_str buffer to store new hex number.
-      else: # If before space part, collect chunk of hex number due to hex number is saved in string manner.
-         tmp_str += i
+   p_txt = rsa_decrypt(c_txt, int(d), int(n))
+   # tmp_str = ""
+   # for i in c_txt:
+   #    if(i == " "):  # If space occur, calculate hex part of cipher text into corresponding plain text.
+   #       t_str = int(tmp_str, 16)
+   #       p_txt += str(chr(rsa(t_str, d, n)))
+   #       tmp_str = ""   # And need to flush tmp_str buffer to store new hex number.
+   #    else: # If before space part, collect chunk of hex number due to hex number is saved in string manner.
+   #       tmp_str += i
 
    # Print calculated plain text and save it into plaintext.txt file.
    print("Decrypted plaintext:",p_txt)
@@ -217,11 +232,10 @@ if(sys.argv[1] == "--sign"):
    pri_key_file = open(pri_key_name, "r")
    sign_txt_file = open(sign_txt_name, "w")
 
-
+   dig_sign = rsa_encrypt(sign)
 
 
    # Close public_key.txt and private_key.txt file.
-   sign.close()
    pri_key_name.close()
    p_txt_file.close()
 
