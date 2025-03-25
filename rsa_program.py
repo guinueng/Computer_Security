@@ -1,14 +1,14 @@
 import sys
 
 def gcd(a, b): # Euclidean Algorithm to get gcd.
-   if(b == 0):
+   if(b == 0): # If base case(b = 0) occurs, return a which is gcd of first input.
       return a
-   else:
+   else: # Else, pursue Euclidean Algorithm.
       q = a % b
       rst = gcd(b, q)
       return rst
 
-def rsa(msg, key, n):
+def rsa(msg, key, n):   # RSA function. Returns m^key mod n.
    return (msg ** key) % n
 
 print(sys.argv)
@@ -17,14 +17,13 @@ print(sys.argv[1])
 if(sys.argv[1] == "--generate-key"):
    print("-–generate-key case")
    if sys.argv[2] == "--p":   # Get required file name on argv.
+      # Reference: https://wikidocs.net/26
       p = int(sys.argv[3])
       q = int(sys.argv[5])
    
    if sys.argv[2] == "--q":
       q = int(sys.argv[3])
       p = int(sys.argv[5])
-
-   # print(p, q)
  
    n = p * q               # Calculate n, phi.
    phi = (p - 1) * (q - 1)
@@ -34,13 +33,8 @@ if(sys.argv[1] == "--generate-key"):
       gcd_rst = gcd(phi, e)
 
       if(gcd_rst == 1): # If found candidate e,
-            # print(e, "has gcd_rst = 1")
             a = phi
             b = e
-            # s_1 = 1
-            # s_2 = 0
-            # t_1 = 0
-            # t_2 = 1
 
             d = 2
             while(d < phi): # Find candidate d by checking e*d mod phi == 1.
@@ -64,11 +58,9 @@ if(sys.argv[1] == "--generate-key"):
             #    t = t_1 - q * t_2
             #    t_1 = t_2
             #    t_2 = t
-            #    print(q, r, a, b, s_1, s_2, t_1, t_2)
-            
+            #
             # k = s_1
             # d = t_1
-            # print(e, d)
 
             if(d > 1 and d < phi):  # If proper d is found(1 < d < phi and e*d mod phi == 1), break function and print result.
                break
@@ -93,10 +85,59 @@ if(sys.argv[1] == "--generate-key"):
 if(sys.argv[1] == "--encrypt"):
    print("--encrypt case")
    p_txt_name = sys.argv[2]   # Get required file name on argv.
-   pub_key_name = sys.argv[4]
+   pri_key_name = sys.argv[4]
    c_txt_name = sys.argv[6]
 
-   print(p_txt_name, pub_key_name, c_txt_name)
+   c_txt_file = open(p_txt_name, "r")     # Open required files.
+   pri_key_file = open(pri_key_name, "r")
+   p_txt_file = open(c_txt_name, "w")
+
+   c_txt = c_txt_file.read()        # Read plain text and public_key fille
+   pri_key_txt = pri_key_file.read()
+
+   p_txt = ""
+   n = ""
+   d = ""
+
+   d_line = False
+   for i in pri_key_txt: # Parsing n and d into given private_key.txt file.
+      if(i == "\n"):
+         d_line = True
+         continue
+
+      if(not(d_line)):
+         if(i != "n" and i != "="):
+            n += i
+      else:
+         if(i != "e" and i != "="):
+            d += i
+
+   n = int(n)  # Conv parsed n and e str to int.
+   d = int(d)
+
+   for i in c_txt:
+      t_str = ord(i)   # ord function converts input character into corresponding ascii.
+      # Reference: https://www.quora.com/How-do-you-convert-ascii-to-integer-in-Python
+      p_txt += str(ascii(rsa(t_str, d, n)))
+
+   p_txt = p_txt[:-1]
+   print(p_txt)
+   print(len(p_txt))
+   # Hello, RSA!
+
+   p_txt_file.write(p_txt)
+
+   p_txt_file.close()
+   pri_key_file.close()
+   c_txt_file.close()
+
+if(sys.argv[1] == "-–decrypt"):
+   print("-–decrypt case")
+   c_txt_name = sys.argv[2]   # Get required file name on argv.
+   pri_key_name = sys.argv[4]
+   p_txt_name = sys.argv[6]
+
+   print(c_txt_name, pub_key_name, p_txt_name)
 
    p_txt_file = open(p_txt_name, "r")     # Open required files.
    pub_key_file = open(pub_key_name, "r")
@@ -126,7 +167,7 @@ if(sys.argv[1] == "--encrypt"):
    e = int(e)
 
    for i in p_txt:
-      t_str = ord(i)   # Need to find how to conv target str into ascii int value.
+      t_str = ord(i)   # ord function converts input character into corresponding ascii.
       c_txt += (hex(rsa(t_str, e, n)) + " ")
 
    c_txt = c_txt[:-1]
@@ -139,9 +180,6 @@ if(sys.argv[1] == "--encrypt"):
    p_txt_file.close()
    pub_key_file.close()
    c_txt_file.close()
-
-if(sys.argv[1] == "-–decrypt"):
-   print("-–decrypt case")
 
 if(sys.argv[1] == "-–sign"):
    print("-–sign case")
