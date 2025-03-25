@@ -8,6 +8,9 @@ def gcd(a, b): # Euclidean Algorithm to get gcd.
       rst = gcd(b, q)
       return rst
 
+def rsa(msg, key, n):
+   return (msg ** key) % n
+
 print(sys.argv)
 print(sys.argv[1])
 
@@ -123,9 +126,15 @@ if(sys.argv[1] == "--encrypt"):
    e = int(e)
 
    for i in p_txt:
-      t_str = hex(ascii(i))   # Need to find how to conv target str into ascii int value.
-      print(t_str)
-      print(t_str*5)
+      t_str = ord(i)   # Need to find how to conv target str into ascii int value.
+      c_txt += (hex(rsa(t_str, e, n)) + " ")
+
+   c_txt = c_txt[:-1]
+   print(c_txt)
+   print(len(c_txt))
+   # 0x43f 0xbff 0x755 0x755 0xc6f 0x469 0xad6 0x435 0x721 0x525 0x971
+
+   c_txt_file.write(c_txt)
 
    p_txt_file.close()
    pub_key_file.close()
