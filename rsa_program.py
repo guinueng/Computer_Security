@@ -18,6 +18,7 @@ def rsa_encrypt(p_txt, e, n):
       t_str = ord(i)   # ord function converts input character into corresponding ascii.
       # Reference: https://www.quora.com/How-do-you-convert-ascii-to-integer-in-Python
       c_txt += (str(hex(rsa(t_str, e, n))) + " ")
+
    return c_txt
 
 def rsa_decrypt(c_txt, d, n):
@@ -31,7 +32,7 @@ def rsa_decrypt(c_txt, d, n):
          tmp_str = ""   # And need to flush tmp_str buffer to store new hex number.
       else: # If before space part, collect chunk of hex number due to hex number is saved in string manner.
          tmp_str += i
-   
+
    return p_txt
 
 print(sys.argv)
@@ -211,12 +212,10 @@ if(sys.argv[1] == "--decrypt"):
    p_txt_file.close()
 
 if(sys.argv[1] == "--sign"):
-   print("-–sign case")
-   sign = sys.argv[2]   # Get required file name on argv.
+   # Get required file name on argv.
+   sign = sys.argv[2]
    pri_key_name = sys.argv[4]
    sign_txt_name = sys.argv[6]
-
-   print(sign, pri_key_name, sign_txt_name)
 
    # Open required files.
    pri_key_file = open(pri_key_name, "r")
@@ -248,11 +247,55 @@ if(sys.argv[1] == "--sign"):
    print("Signature:", digi_sign)
    sign_txt_file.write(digi_sign)
 
-   # Close public_key.txt and private_key.txt file.
+   # Close private_key.txt and signature.txt file.
    pri_key_file.close()
    sign_txt_file.close()
 
 if(sys.argv[1] == "--verify"):
    print("-–verify case")
+   # Get required file name on argv.
+   verify_str = sys.argv[2]
+   sign_txt_name = sys.argv[4]
+   pub_key_name = sys.argv[6]
+
+   # Open required files.
+   sign_txt_file = open(sign_txt_name, "r")
+   pub_key_file = open(pub_key_name, "r")
+
+   # Read plain text and private_key file.
+   sign_txt = sign_txt_file.read()
+   pub_key_txt = pub_key_file.read()
+
+   # Add space on last part of cipher text to be sure calculate last hex number into text.
+   sign_txt += " "
+   n = ""
+   e = ""
+
+   # Parsing n and e into given public_key.txt file.
+   e_line = False
+   for i in pub_key_txt:
+      if(i == "\n"):
+         e_line = True
+         continue
+
+      if(not(e_line)):
+         if(i != "n" and i != "="):
+            n += i
+      else:
+         if(i != "e" and i != "="):
+            e += i
+
+   compare_str = rsa_decrypt(sign_txt, int(e), int(n))
+
+   print(compare_str)
+
+   if(verify_str == compare_str):
+      print("Signature is valid")
+   else:
+      print("Signature is invalid")
+
+   # Close signature.txt and public_key.txt file.
+   sign_txt_file.close()
+   pub_key_file.close()
 
 # –
