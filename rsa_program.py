@@ -239,7 +239,6 @@ if(sys.argv[1] == "--sign"):
    sign_txt_file.close()
 
 if(sys.argv[1] == "--verify"):
-   print("-–verify case")
    # Get required file name and string on argv.
    verify_str = sys.argv[2]
    sign_txt_name = sys.argv[4]
